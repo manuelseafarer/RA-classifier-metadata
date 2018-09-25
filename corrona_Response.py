@@ -54,7 +54,7 @@ def endpoint_sdai(data):
     sdai = tender_jts_28 + swollen_jts_28 + pt_global_assess + md_global_assess + usresultsCRP
     response ='non-responder'
     if 0<=sdai<=11.0: response='responder'
-    return response
+    return [sdai, response]
 
 
 def endpoint_das28crp(data):
@@ -199,7 +199,7 @@ for user in all_users3:
 
     response_end_cdi=endpoint_cdai(data)
     response_end_das = endpoint_das28crp(data)
-    response_end_sdai = endpoint_sdai(data)
+    response_end_sdai = endpoint_sdai(data)[1]
 
     endpoint_cdai_dic3[user] = response_end_cdi
     endpoint_das_dic3[user] = response_end_das
@@ -238,7 +238,7 @@ for user in all_users6:
 
     response_end_cdi = endpoint_cdai(data)
     response_end_das = endpoint_das28crp(data)
-    response_end_sdai = endpoint_sdai(data)
+    response_end_sdai = endpoint_sdai(data)[1]
 
     endpoint_cdai_dic6[user] = response_end_cdi
     endpoint_das_dic6[user] = response_end_das
@@ -255,7 +255,7 @@ header = ('SUBJECT','Row.names','Sample.ID','Suffix','Specimen.Name','Instrument
       'dose_mtx', 'con_cdmard',	'dose_cdmard','usresultsCRP','das28crp','swollen_jts_28','tender_jts_28',
       'pt_global_assess','md_global_assess','cdai','di','pt_pain','eular_dascrp','status_6m',
       'reason_disc_bio','switch','ccpposever_new','usresultsCCP3','rfposever_new','usresultsRF',
-        'eular_das28crp', 'mcid', 'endpoint_cdai','endpoint_sdai',
+        'eular_das28crp', 'mcid', 'endpoint_cdai','sdai','endpoint_sdai',
           'endpoint_das28crp', 'acr_20', 'acr_50', 'acr_70','vote','decision_vote')
 
 original_header=['SUBJECT','Row.names','Sample.ID','Suffix','Specimen.Name','Instrument','PDF','X28S.18S',
@@ -268,12 +268,12 @@ original_header=['SUBJECT','Row.names','Sample.ID','Suffix','Specimen.Name','Ins
                               'pt_global_assess','md_global_assess','cdai','di','pt_pain','eular_dascrp','status_6m',
                               'reason_disc_bio','switch','ccpposever_new','usresultsCCP3','rfposever_new','usresultsRF']
 
-f = open('/Users/asherameli/Desktop/output.txt', 'w')
+f = open('/Users/asherameli/Desktop/RA_response_masterfile.txt', 'w')
 f.write("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t"
         "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t"
         "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t"
         "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t"
-        "%s\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % header)
+        "%s\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % header)
 
 
 import pandas as pd
@@ -290,6 +290,8 @@ for index , data in df.iterrows():
     if index ==0: continue
     #for col in original_header:
     scipher_id = data['Scipher_id']
+
+    sdai = endpoint_sdai(data)[0]
 
     if data['visit'] == '0':
 
@@ -368,7 +370,7 @@ for index , data in df.iterrows():
         "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t"
         "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t"
         "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t"
-        "%s\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" %
+        "%s\t\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" %
 
             (data['SUBJECT'],data['Row.names'],data['Sample.ID'],data['Suffix'],data['Specimen.Name'],data['Instrument'],
              data['PDF'],data['X28S.18S'],data['RIN'],data['Qubit.ug.ul'],data['Total..ug.'],data['DETD'],data['STUDY.ID'],
@@ -381,14 +383,6 @@ for index , data in df.iterrows():
             data['pt_global_assess'],data['md_global_assess'],data['cdai'],data['di'],data['pt_pain'],data['eular_dascrp'],
              data['status_6m'],data['reason_disc_bio'],data['switch'],data['ccpposever_new'],data['usresultsCCP3'],
              data['rfposever_new'],data['usresultsRF'],
-                eular_das28crp_score,mcid_score, endpoint_cdai_score,endpoint_sdai_score,
+                eular_das28crp_score,mcid_score, endpoint_cdai_score,sdai,endpoint_sdai_score,
                 endpoint_das28crp_score,acr_20_score,
                 acr_50_score,acr_70_score, counter,decision))
-
-
-
-
-
-
-
-
